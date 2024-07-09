@@ -1,7 +1,7 @@
 import { FormEvent, useState } from "react";
 import axios from "axios";
 
-function LoginWindow() {
+function RegistrationWindow() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
@@ -11,22 +11,21 @@ function LoginWindow() {
         setErrorMessage('');
 
         try {
-            const response = await axios.post('http://localhost:5001/api/login', {
+            const response = await axios.post('http://localhost:5001/api/register', {
                 username,
                 password,
             });
 
-            localStorage.setItem('token', response.data.token);
-            console.log("logged in", response.data);
+            console.log("Registration Successful", response.data);
         } catch (error) {
-            setErrorMessage("Login Failed");
-            console.error("Login Error", error)
+            setErrorMessage("Registration Failed");
+            console.error("Registration Error", error)
         }
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
+        <div className="registration-container">
+            <h2>Register</h2>
             {errorMessage && <div className="error-message">{errorMessage}</div>}
             <form onSubmit={handleSubmit}>
                 <div>
@@ -49,10 +48,10 @@ function LoginWindow() {
                     >
                     </input>
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit">Register</button>
             </form>
         </div>
     )
 }
 
-export default LoginWindow;
+export default RegistrationWindow;
