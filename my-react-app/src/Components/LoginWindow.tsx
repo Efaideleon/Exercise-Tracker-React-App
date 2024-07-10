@@ -1,5 +1,5 @@
-import { FormEvent, useState } from "react";
-import axios from "axios";
+import { FormEvent, useState } from "react"
+import axios from "axios"
 
 function LoginWindow() {
     const [username, setUsername] = useState<string>('');
