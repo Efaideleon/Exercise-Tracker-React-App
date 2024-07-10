@@ -1,10 +1,16 @@
 import { FormEvent, useState } from "react"
+import { useNavigate } from "react-router-dom";
 import axios from "axios"
 
-function LoginWindow() {
+interface LoginWindowProps {
+    onLoginSuccess: (arg0: string) => void;
+}
+
+function LoginWindow(props: LoginWindowProps) {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
+    const navigate = useNavigate();
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
@@ -18,6 +24,8 @@ function LoginWindow() {
 
             localStorage.setItem('token', response.data.token);
             console.log("logged in", response.data);
+            props.onLoginSuccess(username)
+            navigate('/dashboard')
         } catch (error) {
             setErrorMessage("Login Failed");
             console.error("Login Error", error)
