@@ -9,15 +9,15 @@ interface User {
 interface AuthContextType {
     isLoggedIn: boolean;
     user: User | null;
-    login: (userData: User) => void;
+    login: (userData: User) => Promise<boolean>;
     logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
     isLoggedIn: false,
     user: null,
-    login: async () => { },
-    logout: () => { }
+    login: async () => Promise.resolve(false),
+    logout: async () => { }
 });
 
 interface AuthProviderProps {
@@ -48,11 +48,11 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
                 setUser(null)
             }
         };
-        
+
         fetchUserData();
     }, []);
 
-    const loginHandler = async (userData: User) => {
+    const loginHandler = async (userData: User): Promise<boolean> => {
         try {
             const response = await axios.post('http://localhost:5001/api/login', userData, {
                 withCredentials: true,
@@ -60,17 +60,30 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
             if (response.status === 200) {
                 setIsLoggedIn(true);
-                setUser(userData)
+                setUser(userData);
+                return true;
+            } else {
+                return false;
             }
         } catch (error) {
             console.error("Login Error", error)
+            return false;
         }
     };
 
-    const logoutHandler = () => {
-        setIsLoggedIn(false);
-        setUser(null)
-        localStorage.removeItem('token');
+    const logoutHandler = async () => {
+        try {
+            await axios.post('http://localhost:5001/api/logout', {}, {
+                withCredentials: true,
+            })
+
+            setIsLoggedIn(false);
+            setUser(null);
+            localStorage.removeItem('token');
+
+        } catch (error) {
+            console.error("Logout Error", error);
+        }
     };
 
     const contextValue = {

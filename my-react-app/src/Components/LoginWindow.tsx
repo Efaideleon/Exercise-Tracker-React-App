@@ -16,10 +16,9 @@ function LoginWindow() {
 
         const loggedInUser = { username, password }
 
-        try {
-            authCtx.login(loggedInUser)
+        if (await authCtx.login(loggedInUser)) {
             navigate('/dashboard')
-        } catch(error) {
+        } else {
             setErrorMessage("Login Failed");
         }
     };
