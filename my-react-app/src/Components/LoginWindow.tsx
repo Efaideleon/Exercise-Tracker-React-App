@@ -1,34 +1,26 @@
 import { FormEvent, useState } from "react"
-import { useNavigate } from "react-router-dom";
-import axios from "axios"
+import { useNavigate, Link } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./AuthContext";
 
-interface LoginWindowProps {
-    onLoginSuccess: (arg0: string) => void;
-}
-
-function LoginWindow(props: LoginWindowProps) {
+function LoginWindow() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
     const navigate = useNavigate();
+    const authCtx = useContext(AuthContext)
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         setErrorMessage('');
 
-        try {
-            const response = await axios.post('http://localhost:5001/api/login', {
-                username,
-                password,
-            });
+        const loggedInUser = { username, password }
 
-            localStorage.setItem('token', response.data.token);
-            console.log("logged in", response.data);
-            props.onLoginSuccess(username)
+        try {
+            authCtx.login(loggedInUser)
             navigate('/dashboard')
-        } catch (error) {
+        } catch(error) {
             setErrorMessage("Login Failed");
-            console.error("Login Error", error)
         }
     };
 
@@ -59,6 +51,7 @@ function LoginWindow(props: LoginWindowProps) {
                 </div>
                 <button type="submit">Login</button>
             </form>
+            <Link to="/register">Create Account</Link>
         </div>
     )
 }

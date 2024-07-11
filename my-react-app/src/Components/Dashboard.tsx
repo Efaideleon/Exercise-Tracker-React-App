@@ -1,14 +1,15 @@
-interface DashboardProps {
-    username: string
-}
+import { useContext } from "react";
+import { AuthContext } from "./AuthContext";
 
-function Dashboard(props: DashboardProps) {
+function Dashboard() {
+    const authCtx = useContext(AuthContext);
+
     return (
         <>
             <div>Dashboard</div>
-            <div>Welcome {props.username}!</div>
+            <div>Welcome {authCtx.user?.username}!</div>
         </>
     )
 }
 
-export default Dashboard
+export default Dashboard;

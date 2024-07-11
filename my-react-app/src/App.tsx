@@ -1,27 +1,23 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import './App.css'
-import './Components/LoginWindow'
+import { AuthProvider } from './Components/AuthContext'
 import LoginWindow from './Components/LoginWindow'
 import RegistrationWindow from './Components/RegistrationWindow'
 import Dashboard from './Components/Dashboard'
-import { useState } from 'react'
+import './App.css'
+import './Components/LoginWindow'
 
 function App() {
-  const [loggedInUsername, setLoggedInUsername] = useState<string>('')
-
-  const handleLoginSuccess = (username: string) => {
-    setLoggedInUsername(username);
-  };
-
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path='/login' element={<LoginWindow onLoginSuccess={handleLoginSuccess}/>} />
-        <Route path='/register' element={<RegistrationWindow />} />
-        <Route path='/dashboard' element={<Dashboard username={loggedInUsername}/>} />
-        <Route path='*' element={<Navigate to="/login" />} />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path='/login' element={<LoginWindow />} />
+          <Route path='/register' element={<RegistrationWindow />} />
+          <Route path='/dashboard' element={<Dashboard />} />
+          <Route path='*' element={<Navigate to="/login" />} />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   )
 }
 

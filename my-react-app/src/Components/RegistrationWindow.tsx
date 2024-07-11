@@ -1,4 +1,5 @@
 import { FormEvent, useState } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 function RegistrationWindow() {
@@ -50,6 +51,7 @@ function RegistrationWindow() {
                 </div>
                 <button type="submit">Register</button>
             </form>
+            <Link to="/login">Login</Link>
         </div>
     )
 }
