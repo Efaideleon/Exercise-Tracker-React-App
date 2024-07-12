@@ -1,10 +1,10 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './Components/AuthContext'
-import LoginWindow from './Components/LoginWindow'
-import RegistrationWindow from './Components/RegistrationWindow'
-import Dashboard from './Components/Dashboard'
+import LoginWindow from './Components/login_window/LoginWindow'
+import RegistrationWindow from './Components/register_window/RegistrationWindow'
+import Dashboard from './Components/dashboard/Dashboard'
 import './App.css'
-import './Components/LoginWindow'
+import './Components/login_window/LoginWindow'
 
 function App() {
   return (

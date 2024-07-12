@@ -1,4 +1,4 @@
-import { createContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useState, ReactNode } from "react";
 import axios from 'axios';
 
 interface User {
@@ -9,6 +9,7 @@ interface User {
 interface AuthContextType {
     isLoggedIn: boolean;
     user: User | null;
+    fetchData: () => void;
     login: (userData: User) => Promise<boolean>;
     logout: () => void;
 }
@@ -16,6 +17,7 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({
     isLoggedIn: false,
     user: null,
+    fetchData: () => {},
     login: async () => Promise.resolve(false),
     logout: async () => { }
 });
@@ -28,29 +30,26 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
     const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await axios.get('http://localhost:5001/api/me', {
-                    withCredentials: true,
-                });
 
-                if (response.status === 200) {
-                    setUser(response.data)
-                    setIsLoggedIn(true)
-                } else {
-                    setUser(null)
-                    setIsLoggedIn(false)
-                }
-            } catch (error) {
-                console.error("Error fetching user data: ", error);
-                setIsLoggedIn(false)
+    const fetchUserData = async () => {
+        try {
+            const response = await axios.get('http://localhost:5001/api/me', {
+                withCredentials: true,
+            });
+
+            if (response.status === 200) {
+                setUser(response.data)
+                setIsLoggedIn(true)
+            } else {
                 setUser(null)
+                setIsLoggedIn(false)
             }
-        };
-
-        fetchUserData();
-    }, []);
+        } catch (error) {
+            console.error("Error fetching user data: ", error);
+            setIsLoggedIn(false)
+            setUser(null)
+        }
+    };
 
     const loginHandler = async (userData: User): Promise<boolean> => {
         try {
@@ -89,6 +88,7 @@ const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     const contextValue = {
         isLoggedIn: isLoggedIn,
         user: user,
+        fetchData: fetchUserData,
         login: loginHandler,
         logout: logoutHandler
     };

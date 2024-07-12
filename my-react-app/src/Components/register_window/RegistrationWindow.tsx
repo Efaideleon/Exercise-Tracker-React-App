@@ -1,31 +1,33 @@
-import { FormEvent, useState } from "react"
-import { useNavigate, Link } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "./AuthContext";
+import { FormEvent, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import "./RegistrationWindowStyles.css"
 
-function LoginWindow() {
+function RegistrationWindow() {
     const [username, setUsername] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [errorMessage, setErrorMessage] = useState<string>('');
-    const navigate = useNavigate();
-    const authCtx = useContext(AuthContext)
 
     const handleSubmit = async (event: FormEvent) => {
         event.preventDefault();
         setErrorMessage('');
 
-        const loggedInUser = { username, password }
+        try {
+            const response = await axios.post('http://localhost:5001/api/register', {
+                username,
+                password,
+            });
 
-        if (await authCtx.login(loggedInUser)) {
-            navigate('/dashboard')
-        } else {
-            setErrorMessage("Login Failed");
+            console.log("Registration Successful", response.data);
+        } catch (error) {
+            setErrorMessage("Registration Failed");
+            console.error("Registration Error", error)
         }
     };
 
     return (
-        <div className="login-container">
-            <h2>Login</h2>
+        <div className="registration-container">
+            <h2>Register</h2>
             {errorMessage && <div className="error-message">{errorMessage}</div>}
             <form onSubmit={handleSubmit}>
                 <div>
@@ -48,11 +50,11 @@ function LoginWindow() {
                     >
                     </input>
                 </div>
-                <button type="submit">Login</button>
+                <button type="submit">Register</button>
             </form>
-            <Link to="/register">Create Account</Link>
+            <Link to="/login">Login</Link>
         </div>
     )
 }
 
-export default LoginWindow;
+export default RegistrationWindow;
